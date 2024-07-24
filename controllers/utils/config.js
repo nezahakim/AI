@@ -1,0 +1,49 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+const config = {
+    URL: "https://nezaai.vercel.app",
+    // Bot token from BotFather
+    BOT_TOKEN: process.env.BOT_TOKEN,
+    BOT_TOKEN_TWO: process.env.BOT_TOKEN_TWO,
+
+    // Hugging Face API token
+    HF_TOKEN: process.env.HF_TOKEN,
+
+    // Model configurations
+    TEXT_MODEL: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
+    MATH_MODEL: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
+    CODE_MODEL: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
+
+    VOICE_RECG: "openai/whisper-large-v3",
+    SUMMARY_MODEL: "facebook/bart-large-cnn",
+
+    IMAGE_MODEL: "mann-e/Mann-E_Dreams",
+    IMAGE_VARIATION_MODEL: "lambdalabs/sd-image-variations-diffusers",
+
+    // Generation parameters
+    MAX_TOKENS: 265,
+    TEMPERATURE: 0.8,
+    TOP_P: 0.9,
+
+    // Rate limiting
+    MESSAGE_DELAY: 500,
+
+    // Telegram API configurations
+    API_BASE_URL: "https://api.telegram.org",
+
+    // Command prefixes
+    GENERATE_COMMAND: "/generate",
+    START_COMMAND: "/start",
+
+    // Response messages
+    WELCOME_MESSAGE: "Welcome to NezaAI! How can I assist you today?",
+    THINKING_MESSAGE: "Thinking...👀",
+    ERROR_MESSAGE: "Sorry, there was an error. Please try again later.",
+
+    // Chunk sizes for live responses
+    LIVE_RESPONSE_CHUNK_SIZE: 20,
+    CHANNEL_RESPONSE_CHUNK_SIZE: 100,
+};
+
+export default config;
