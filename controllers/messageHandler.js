@@ -5,6 +5,7 @@ import { getGeneratedText } from "./utils/model.js";
 import config from "./utils/config.js";
 import Engine from "./utils/Engine.js";
 import { checkUser } from "../checks.js";
+import groupHandler from "./groupHandler.js";
 
 const messageHandler = {
     handlePrivateMessage: async (bot, msg) => {
@@ -23,6 +24,7 @@ const messageHandler = {
                 await mediaHandler.handleMedia(bot, msg);
             } else {
                 const response = CheckMSG(text);
+
                 if (response) {
                     await bot.sendMessage(chatId, response);
                 } else {
@@ -44,11 +46,8 @@ const messageHandler = {
         const botUsername = "nezaai";
         console.log(`Group message received: ${text}`);
 
-        if (text.toLowerCase().startsWith("/imagine")) {
-            await bot.sendMessage(
-                chatId,
-                `I'm sorry we generate  Images only in Our official Groups (@NezaAICreatives), (@InternationalfriendsAlternative) or on Main bot (@NezaAIbot).`,
-            );
+        if (text.startsWith("/")) {
+            await groupHandler.handleGroupCommand(bot, msg);
         } else if (text.toLowerCase().includes(`${botUsername}`)) {
             const cleanText = text
                 .toLowerCase()
@@ -69,6 +68,11 @@ const messageHandler = {
             } else {
                 await bot.sendMessage(chatId, "I'm sorry what do you mean ?");
             }
+        } else if (msg.new_chat_members) {
+            await groupHandler.handleNewMember(bot, msg);
+            return;
+        } else if (msg.left_chat_member) {
+            await groupHandler.handleLeftMember(bot, msg);
         }
     },
 
@@ -209,7 +213,13 @@ const messageHandler = {
             const { modelType, enhancedInput } =
                 await engine.processInput(userMessage);
 
+            // const modelInput = createModelInput(
+            //     session[chatId].history,
+            //     userMessage,
+            // );
+
             for await (const word of getGeneratedText(
+                chatId,
                 enhancedInput,
                 modelType,
             )) {

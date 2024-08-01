@@ -18,7 +18,11 @@ const config = {
     VOICE_RECG: "openai/whisper-large-v3",
     SUMMARY_MODEL: "facebook/bart-large-cnn",
 
-    IMAGE_MODEL: "mann-e/Mann-E_Dreams",
+    // IMAGE_MODEL: "stabilityai/stable-diffusion-2-1",
+
+    // IMAGE_MODEL: "mann-e/Mann-E_Dreams",
+    IMAGE_MODEL: "Kvikontent/midjourney-v6",
+
     IMAGE_VARIATION_MODEL: "lambdalabs/sd-image-variations-diffusers",
 
     // Generation parameters

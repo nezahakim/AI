@@ -55,7 +55,7 @@ const mediaHandler = {
         const imageBuffer = await imageModel.generateTextToImage(prompt, {
             resize: { width: 512, height: 512 },
             format: "jpeg",
-            quality: 90,
+            quality: 100,
         });
 
         if (imageBuffer) {

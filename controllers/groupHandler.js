@@ -1,3 +1,5 @@
+import mediaHandler from "./mediaHandler.js";
+
 const groupHandler = {
     handleNewMember: async (bot, msg) => {
         const chatId = msg.chat.id;
@@ -46,10 +48,32 @@ Feel free to tag me in your messages or reply to my messages for assistance. Enj
 
         switch (command) {
             case "/rules":
-                await bot.sendMessage(
-                    chatId,
-                    "Here are the group rules: ...",
-                );
+                await bot.sendMessage(chatId, "Here are the group rules: ...");
+                break;
+            case "/imagine":
+                const inappropriateKeywords = [
+                    "naked",
+                    "nude",
+                    "porn",
+                    "sex",
+                    "xxx",
+                    "explicit",
+                    "dirty",
+                    "inappropriate",
+                ];
+
+                if (
+                    inappropriateKeywords.some((keyword) =>
+                        msg.text.toLowerCase().includes(keyword),
+                    )
+                ) {
+                    await bot.sendMessage(
+                        chatId,
+                        "Sorry I can't assist you with that.",
+                    );
+                } else {
+                    await mediaHandler.generateImage(bot, msg);
+                }
                 break;
             case "/help":
                 await bot.sendMessage(

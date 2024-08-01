@@ -20,7 +20,7 @@ app.listen(port, () => {
 });
 
 // Create a bot instance
-const bot = new TelegramBot(config.BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(config.BOT_TOKEN_TWO, { polling: true });
 
 // Handle all incoming messages
 bot.on("message", async (msg) => {
@@ -32,10 +32,10 @@ bot.on("message", async (msg) => {
         await TutorialProcess(bot, msg);
     }
     // Check if it's a new chat member
-    if (msg.new_chat_members) {
-        groupHandler.handleNewMember(bot, msg);
-        return;
-    }
+    // if (msg.new_chat_members) {
+    //     await groupHandler.handleNewMember(bot, msg);
+    //     return;
+    // }
 
     const botInfo = await bot.getMe();
     const botUsername = botInfo.username;
