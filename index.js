@@ -20,7 +20,7 @@ app.listen(port, () => {
 });
 
 // Create a bot instance
-const bot = new TelegramBot(config.BOT_TOKEN_TWO, { polling: true });
+const bot = new TelegramBot(config.BOT_TOKEN, { polling: true });
 
 // Handle all incoming messages
 bot.on("message", async (msg) => {
