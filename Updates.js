@@ -44,7 +44,8 @@ async function sendUpdatesToUsers(bot) {
         console.log(message);
 
         await bot.sendMessage(user.telegramId, message, {
-          parse_mode: "Markdown",
+          parse_mode: "MarkdownV2",
+          disable_web_page_preview: true,
         });
 
         console.log(`Message sent to user: ${user.username}`);
@@ -72,117 +73,6 @@ async function getWeatherTeaser(city) {
 
 async function getTelegramTrends() {
   return `1. #NezaAI\n2. @Notifycode We have Introduced new Features and Services. \n3. #Remember to use Our Bot in your Groups also.`;
-}
-
-async function getNewsTeaser() {
-  const fallbackNews = [
-    {
-      category: "General",
-      title: "Stay informed on current events",
-      description: "Keep up with the latest developments around the world.",
-    },
-    {
-      category: "Palestine Update",
-      title: "Ongoing situation in Palestine",
-      description:
-        "Continue to monitor the evolving circumstances in the region.",
-    },
-    {
-      category: "Global Conflict",
-      title: "Various global conflicts persist",
-      description:
-        "Stay aware of ongoing conflicts and their impact on international relations.",
-    },
-  ];
-
-  try {
-    const response = await axios.get(
-      `https://newsapi.org/v2/top-headlines?apiKey=${process.env.NEWS_API_KEY}&language=en&pageSize=50`,
-      { timeout: 5000 }, // 5 second timeout
-    );
-
-    const articles = response.data.articles;
-
-    if (!articles || articles.length === 0) {
-      throw new Error("No articles returned from API");
-    }
-
-    let newsCategories = {
-      general: null,
-      palestine: null,
-      conflict: null,
-    };
-
-    for (let article of articles) {
-      if (article && article.title && article.description) {
-        const lowerTitle = article.title.toLowerCase();
-        const lowerDesc = article.description.toLowerCase();
-
-        if (!newsCategories.general) {
-          newsCategories.general = article;
-        }
-
-        if (
-          !newsCategories.palestine &&
-          (lowerTitle.includes("palestine") ||
-            lowerDesc.includes("palestine") ||
-            lowerTitle.includes("gaza") ||
-            lowerDesc.includes("gaza"))
-        ) {
-          newsCategories.palestine = article;
-        }
-
-        if (
-          !newsCategories.conflict &&
-          (lowerTitle.includes("war") ||
-            lowerDesc.includes("war") ||
-            lowerTitle.includes("conflict") ||
-            lowerDesc.includes("conflict"))
-        ) {
-          newsCategories.conflict = article;
-        }
-
-        if (Object.values(newsCategories).every((val) => val !== null)) {
-          break;
-        }
-      }
-    }
-
-    let newsTeaser = "📰 *Today's Top News:*\n\n";
-
-    Object.entries(newsCategories).forEach(([category, article]) => {
-      if (article) {
-        const title =
-          article.title.length > 100
-            ? article.title.substring(0, 97) + "..."
-            : article.title;
-        const desc =
-          article.description.length > 100
-            ? article.description.substring(0, 97) + "..."
-            : article.description;
-        newsTeaser += `*${category.charAt(0).toUpperCase() + category.slice(1)}:* ${title}\n_${desc}_\n\n`;
-      } else {
-        const fallback = fallbackNews.find((news) =>
-          news.category.toLowerCase().includes(category),
-        );
-        if (fallback) {
-          newsTeaser += `*${fallback.category}:* ${fallback.title}\n_${fallback.description}_\n\n`;
-        }
-      }
-    });
-
-    newsTeaser += "_For more detailed news updates, use /notifynews_";
-
-    return newsTeaser;
-  } catch (error) {
-    console.error("Error fetching news teaser:", error);
-    let fallbackTeaser = "📰 *Today's Top News:*\n\n";
-    fallbackNews.forEach((news) => {
-      fallbackTeaser += `*${news.category}:* ${news.title}\n_${news.description}_\n\n`;
-    });
-    fallbackTeaser += "_For more detailed news updates, use /notifynews_";
-    return fallbackTeaser;
-  }
 }
 
 async function getQuoteOfTheDay() {
