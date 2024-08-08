@@ -236,7 +236,7 @@ function Updates(bot) {
   //   },
   // );
 cron.schedule(
-    "15 21 * * *",
+    "21 21 * * *",
     () => {
       console.log("Sending evening updates");
       sendUpdatesToUsers(bot);
