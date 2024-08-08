@@ -10,9 +10,11 @@
     "mongoose": "^8.5.1",
     "natural": "^7.1.0",
     "node-cache": "^5.1.2",
+    "node-cron": "^3.0.3",
     "node-nlp": "^4.27.0",
     "node-telegram-bot-api": "^0.66.0",
     "p-limit": "^6.1.0",
+    "rss-parser": "^3.13.0",
     "sharp": "^0.33.4"
   },
   "name": "nezaai",

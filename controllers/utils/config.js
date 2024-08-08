@@ -11,10 +11,11 @@ const config = {
     HF_TOKEN: process.env.HF_TOKEN,
 
     // Model configurations
-    TEXT_MODEL: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
-    MATH_MODEL: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
-    CODE_MODEL: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
-
+    TEXT_MODEL: "meta-llama/Meta-Llama-3-8B-Instruct",
+    MATH_MODEL: "meta-llama/Meta-Llama-3-8B-Instruct",
+    // CODE_MODEL: "OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5",
+    CODE_MODEL: "meta-llama/Meta-Llama-3-8B-Instruct",
+    
     VOICE_RECG: "openai/whisper-large-v3",
     SUMMARY_MODEL: "facebook/bart-large-cnn",
 

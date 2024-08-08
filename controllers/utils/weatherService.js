@@ -1,6 +1,9 @@
 import axios from "axios";
+import { getGeneratedText } from "./model.js";
 
 const API_KEY = "df8172766924437e90c181751242207"; // Replace with your actual WeatherAPI key
+var UserID;
+var CityName;
 
 const weatherService = async (bot, chatId, city) => {
   try {
@@ -8,9 +11,11 @@ const weatherService = async (bot, chatId, city) => {
       `http://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}&aqi=no`,
     );
     const data = response.data;
+    UserID = chatId;
+    CityName = city;
 
     // Generate detailed weather description
-    const weatherDescription = generateWeatherDescription(data);
+    const weatherDescription = await generateWeatherDescription(data);
 
     // Send weather icon and detailed description
     const iconUrl = `http:${data.current.condition.icon}`;
@@ -27,7 +32,7 @@ const weatherService = async (bot, chatId, city) => {
   }
 };
 
-const generateWeatherDescription = (data) => {
+const generateWeatherDescription = async (data) => {
   const { location, current } = data;
 
   let description = `🌡 *Weather in ${location.name}*\n\n`;
@@ -53,7 +58,7 @@ const generateWeatherDescription = (data) => {
     description += `*Sunset:* ${sunset}\n\n`;
   }
 
-  description += getWeatherAdvice(
+  description += await getWeatherAdvice(
     current.temp_c,
     current.condition.code,
     current.wind_kph,
@@ -67,7 +72,7 @@ const getWindDirection = (degree) => {
   return directions[Math.round(degree / 45) % 8];
 };
 
-const getWeatherAdvice = (temp, weatherCode, windSpeed) => {
+const getWeatherAdvice = async (temp, weatherCode, windSpeed) => {
   let advice = "*Weather Advice:*\n";
 
   if (temp < 10) {
@@ -95,7 +100,22 @@ const getWeatherAdvice = (temp, weatherCode, windSpeed) => {
     advice += "• Strong winds. Secure any loose objects outdoors.\n";
   }
 
-  return advice;
+  let fullResponse = "";
+  let enhancedInput =
+    "In 50 words tell me an Advice for that Temperature:" +
+    advice +
+    " Temperature is " +
+    temp +
+    " and the weather is " +
+    weatherCode +
+    " and the wind speed is " +
+    windSpeed +
+    " The City Name is " +
+    CityName;
+  for await (const chunk of getGeneratedText(UserID, enhancedInput)) {
+    fullResponse += chunk;
+  }
+  return "*Weather Advice:*\n" + fullResponse;
 };
 
 export default weatherService;

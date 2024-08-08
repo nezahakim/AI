@@ -6,6 +6,7 @@ import config from "./utils/config.js";
 import Engine from "./utils/Engine.js";
 import { checkUser } from "../checks.js";
 import groupHandler from "./groupHandler.js";
+import weatherService from "./utils/weatherService.js";
 
 const messageHandler = {
     handlePrivateMessage: async (bot, msg) => {
@@ -26,7 +27,20 @@ const messageHandler = {
                 const response = CheckMSG(text);
 
                 if (response) {
-                    await bot.sendMessage(chatId, response);
+                    if (response === "isWeather") {
+                        let cityName = "";
+                        for await (const chunks of getGeneratedText(
+                            chatId,
+                            "Tell me only the name of the city or country or a place mentioned here mentioned here:" +
+                                text,
+                        )) {
+                            cityName += chunks;
+                        }
+
+                        await weatherService(bot, chatId, cityName);
+                    } else {
+                        await bot.sendMessage(chatId, response);
+                    }
                 } else {
                     await messageHandler.generateLiveResponse(
                         bot,
@@ -154,7 +168,6 @@ const messageHandler = {
             msg.message_id,
         );
     },
-
     generateLiveResponse: async (
         bot,
         chatId,
@@ -163,24 +176,19 @@ const messageHandler = {
     ) => {
         let messageId = null;
         let fullResponse = "";
-        let wordBuffer = [];
-        const updateInterval = 200; // Update every 200ms for a smoother experience
+        const updateInterval = 500;
         let lastUpdateTime = 0;
         let typingInterval;
 
-        const updateMessage = async (force = false) => {
+        const updateMessage = async (content, force = false) => {
             const currentTime = Date.now();
             if (force || currentTime - lastUpdateTime >= updateInterval) {
-                if (wordBuffer.length > 0) {
-                    fullResponse += wordBuffer.join(" ") + " ";
-                    wordBuffer = [];
-                }
-                if (fullResponse.trim()) {
+                if (content.trim()) {
                     try {
                         if (!messageId) {
                             const sentMessage = await bot.sendMessage(
                                 chatId,
-                                fullResponse.trim(),
+                                content.trim(),
                                 {
                                     reply_to_message_id: replyToMessageId,
                                     parse_mode: "Markdown",
@@ -188,7 +196,7 @@ const messageHandler = {
                             );
                             messageId = sentMessage.message_id;
                         } else {
-                            await bot.editMessageText(fullResponse.trim(), {
+                            await bot.editMessageText(content.trim(), {
                                 chat_id: chatId,
                                 message_id: messageId,
                                 parse_mode: "Markdown",
@@ -203,7 +211,6 @@ const messageHandler = {
         };
 
         try {
-            // Start a repeating typing indicator
             typingInterval = setInterval(
                 () => bot.sendChatAction(chatId, "typing"),
                 4000,
@@ -213,27 +220,21 @@ const messageHandler = {
             const { modelType, enhancedInput } =
                 await engine.processInput(userMessage);
 
-            // const modelInput = createModelInput(
-            //     session[chatId].history,
-            //     userMessage,
-            // );
-
-            for await (const word of getGeneratedText(
+            for await (const chunk of getGeneratedText(
                 chatId,
                 enhancedInput,
                 modelType,
             )) {
-                wordBuffer.push(word);
-                await updateMessage();
+                fullResponse += chunk;
+                await updateMessage(fullResponse);
             }
 
             // Final update
-            await updateMessage(true);
+            await updateMessage(fullResponse, true);
         } catch (error) {
             console.error("Error in generateLiveResponse:", error);
             await bot.sendMessage(chatId, config.ERROR_MESSAGE);
         } finally {
-            // Clear the typing indicator interval
             clearInterval(typingInterval);
         }
     },

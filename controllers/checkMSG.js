@@ -1,3 +1,5 @@
+import weatherService from "./utils/weatherService.js";
+
 export default function CheckMSG(msg) {
   const text = msg.toLowerCase();
 
@@ -210,7 +212,8 @@ export default function CheckMSG(msg) {
   const matchesPattern = weatherPatterns.some((pattern) => pattern.test(text));
 
   if (matchesPattern) {
-    return "Want to know the weather in your city? Just use the command `/weather <city name>`.";
+    // return "Want to know the weather in your city? Just use the command `/weather <city name>`.";
+    return "isWeather";
   }
 
   const namePatterns = [

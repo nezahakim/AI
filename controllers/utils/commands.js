@@ -1,5 +1,7 @@
 import weatherService from "./weatherService.js";
 import searchService from "./searchService.js";
+import NewsService from "../../News.js";
+
 import {
   help,
   start,
@@ -75,6 +77,9 @@ const commands = async (bot, msg) => {
         } else {
           await weatherService(bot, chatId, args);
         }
+        break;
+      case "news":
+        await bot.sendMessage(chatId, await NewsService.getNewsUpdate());
         break;
       case "support":
         await bot.sendMessage(

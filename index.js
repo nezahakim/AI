@@ -9,6 +9,8 @@ import {
     TutorialProcess,
 } from "./controllers/utils/commands/index.js";
 
+import Updates from "./Updates.js";
+
 const app = express();
 app.get("/", (req, res) => {
     res.send("NezaAI is running");
@@ -20,7 +22,8 @@ app.listen(port, () => {
 });
 
 // Create a bot instance
-const bot = new TelegramBot(config.BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(config.BOT_TOKEN_TWO, { polling: true });
+Updates(bot);
 
 // Handle all incoming messages
 bot.on("message", async (msg) => {
