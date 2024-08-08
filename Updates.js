@@ -236,16 +236,18 @@ function Updates(bot) {
   //   },
   // );
 cron.schedule(
-    "21 21 * * *",
-    () => {
-      console.log("Sending evening updates");
-      sendUpdatesToUsers(bot);
-    },
-    {
-      scheduled: true,
-      timezone: "Etc/GMT-2",
-    }
-  );
+  "25 21 * * *",
+  () => {
+    const now = new Date();
+    console.log(`Sending evening updates at ${now.toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}`);
+    sendUpdatesToUsers(bot);
+  },
+  {
+    scheduled: true,
+    timezone: "Europe/Berlin",
+  }
+);
   console.log("Scheduler started");
 }
+
 export default Updates;
