@@ -124,7 +124,7 @@ function Updates(bot) {
   //   },
   // );
 cron.schedule(
-  "37 21 * * *",
+  "59 21 * * *",
   () => {
     const now = new Date();
     console.log(`Sending evening updates at ${now.toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}`);
