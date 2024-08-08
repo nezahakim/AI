@@ -171,30 +171,39 @@ class NewsService {
   }
 
   formatNewsUpdate(categories) {
-    let update = "📰 *Latest News Updates*\n\n";
+  let update = "📰 *Latest News Updates*\n\n";
 
-    const formatCategory = (title, items) => {
-      if (items.length > 0) {
-        update += `*${title}:*\n`;
-        items.slice(0, 2).forEach((item) => {
-          update += `• *${item.title.trim()}*\n`;
-          update += `  ${item.summary.substring(0, 150).trim()}...\n`;
-          update += `  Source: ${item.source} | ${item.date.toDateString()}\n`;
-          update += `  [Read more](${item.link})\n\n`;
-        });
-      }
-    };
+  const escapeMarkdown = (text) => {
+    return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+  };
 
-    formatCategory("Palestine Focus", categories.palestine);
-    formatCategory("Global Conflicts", categories.conflicts);
-    formatCategory("World News", categories.world);
-    formatCategory("General News", categories.general);
+  const formatCategory = (title, items) => {
+    if (items.length > 0) {
+      update += `*${escapeMarkdown(title)}:*\n`;
+      items.slice(0, 2).forEach(item => {
+        update += `• *${escapeMarkdown(item.title.trim())}*\n`;
+        update += `  ${escapeMarkdown(item.summary.substring(0, 100).trim())}...\n`;
+        update += `  Source: ${escapeMarkdown(item.source)} | ${item.date.toDateString()}\n`;
+        update += `  [Read more](${item.link})\n\n`;
+      });
+    }
+  };
 
-    update +=
-      "_For more detailed news updates, visit First Telegram News Page @Notifynews";
+  formatCategory("Palestine Focus", categories.palestine);
+  formatCategory("Global Conflicts", categories.conflicts);
+  formatCategory("World News", categories.world);
+  formatCategory("General News", categories.general);
 
-    return update;
+  update += "_For more detailed news updates, use /fullnews_";
+
+  // Ensure the message doesn't exceed Telegram's limit
+  if (update.length > 4000) {
+    update = update.substring(0, 3997) + "...";
   }
+
+  return update;
+}
+
 
   async getNewsUpdate() {
     try {
