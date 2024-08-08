@@ -224,8 +224,19 @@ function Updates(bot) {
     },
   );
 
-  cron.schedule(
-    "0 21 * * *",
+  // cron.schedule(
+  //   "0 21 * * *",
+  //   () => {
+  //     console.log("Sending evening updates");
+  //     sendUpdatesToUsers(bot);
+  //   },
+  //   {
+  //     scheduled: true,
+  //     timezone: "Etc/GMT-2",
+  //   },
+  // );
+cron.schedule(
+    "15 21 * * *",
     () => {
       console.log("Sending evening updates");
       sendUpdatesToUsers(bot);
@@ -233,7 +244,7 @@ function Updates(bot) {
     {
       scheduled: true,
       timezone: "Etc/GMT-2",
-    },
+    }
   );
   console.log("Scheduler started");
 }
