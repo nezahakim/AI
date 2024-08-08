@@ -40,9 +40,6 @@ async function sendUpdatesToUsers(bot) {
 
         // Salutation
         message += `Best regards,\nYour AI Assistant @NezaAI`;
-
-        console.log(message);
-
         await bot.sendMessage(user.telegramId, message, {
           parse_mode: "MarkdownV2",
           disable_web_page_preview: true,
