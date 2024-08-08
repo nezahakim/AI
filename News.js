@@ -174,7 +174,13 @@ class NewsService {
   let update = "📰 *Latest News Updates*\n\n";
 
   const escapeMarkdown = (text) => {
-    return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+    const specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+    return text.split('').map((char) => {
+      if (specialChars.includes(char)) {
+        return '\\' + char;
+      }
+      return char;
+    }).join('');
   };
 
   const formatCategory = (title, items) => {
@@ -183,7 +189,7 @@ class NewsService {
       items.slice(0, 2).forEach(item => {
         update += `• *${escapeMarkdown(item.title.trim())}*\n`;
         update += `  ${escapeMarkdown(item.summary.substring(0, 100).trim())}...\n`;
-        update += `  Source: ${escapeMarkdown(item.source)} | ${item.date.toDateString()}\n`;
+        update += `  Source: ${escapeMarkdown(item.source)} | ${escapeMarkdown(item.date.toDateString())}\n`;
         update += `  [Read more](${item.link})\n\n`;
       });
     }
@@ -203,6 +209,7 @@ class NewsService {
 
   return update;
 }
+
 
 
   async getNewsUpdate() {
