@@ -41,9 +41,10 @@ async function sendUpdatesToUsers(bot) {
         // Salutation
         message += `Best regards,\nYour AI Assistant @NezaAI`;
         await bot.sendMessage(user.telegramId, message, {
-          parse_mode: "MarkdownV2",
-          disable_web_page_preview: true,
-        });
+  parse_mode: "MarkdownV2",
+  disable_web_page_preview: true
+});
+
 
         console.log(`Message sent to user: ${user.username}`);
       } catch (error) {
