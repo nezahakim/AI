@@ -40,7 +40,8 @@ async function sendUpdatesToUsers(bot) {
 
         // Salutation
         message += `Best regards,\nYour AI Assistant @NezaAI`;
-        await bot.sendMessage(user.telegramId, message, {
+console.log(message)
+        await bot.sendMessage(user.telegramId, message.replace("!",""), {
   parse_mode: "MarkdownV2",
   disable_web_page_preview: true
 });
@@ -101,7 +102,7 @@ function Updates(bot) {
   // Schedule tasks for 06:00 and 19:00 GMT+2
 
   cron.schedule(
-    "35 8 * * *",
+    "40 8 * * *",
     () => {
       console.log("Sending morning updates");
       sendUpdatesToUsers(bot);
