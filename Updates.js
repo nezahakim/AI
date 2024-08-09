@@ -8,7 +8,7 @@ import axios from "axios";
 import cron from "node-cron";
 
 const escapeMarkdown = (text) => {
-  const specialChars = "_`[";
+  const specialChars = "_`";
   return text
     .split("")
     .map((char) => {
