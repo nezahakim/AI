@@ -7,6 +7,38 @@ import User from "./models/User.js";
 import axios from "axios";
 import cron from "node-cron";
 
+const escapeMarkdown = (text) => {
+  const specialChars = [
+    "_",
+    "*",
+    "[",
+    "]",
+    "(",
+    ")",
+    "~",
+    "`",
+    ">",
+    "#",
+    "+",
+    "-",
+    "=",
+    "|",
+    "{",
+    "}",
+    ".",
+    "!",
+  ];
+  return text
+    .split("")
+    .map((char) => {
+      if (specialChars.includes(char)) {
+        return "\\" + char;
+      }
+      return char;
+    })
+    .join("");
+};
+
 async function sendUpdatesToUsers(bot) {
   try {
     const users = await User.find({});
@@ -36,16 +68,15 @@ async function sendUpdatesToUsers(bot) {
         message += `💡 *Quote of the Day:*\n${quote}\n\n`;
 
         // Call-to-action
-        message += `Have a great ${timeOfDay}! Remember, I'm here to help. Just ask if you need anything! 😊\n\n`;
+        message += `Have a great ${timeOfDay}! Remember, I'm here to help. Just ask if you need anything! 😊\n\n from @Notifycode .`;
 
         // Salutation
         message += `Best regards,\nYour AI Assistant @NezaAI`;
-console.log(message)
-        await bot.sendMessage(user.telegramId, message.replace("!",""), {
-  parse_mode: "MarkdownV2",
-  disable_web_page_preview: true
-});
-
+        const senitizedMessage = escapeMarkdown(message);
+        await bot.sendMessage(user.telegramId, senitizedMessage, {
+          parse_mode: "MarkdownV2",
+          disable_web_page_preview: true,
+        });
 
         console.log(`Message sent to user: ${user.username}`);
       } catch (error) {
@@ -102,7 +133,7 @@ function Updates(bot) {
   // Schedule tasks for 06:00 and 19:00 GMT+2
 
   cron.schedule(
-    "40 8 * * *",
+    "55 8 * * *",
     () => {
       console.log("Sending morning updates");
       sendUpdatesToUsers(bot);
@@ -112,30 +143,20 @@ function Updates(bot) {
       timezone: "Etc/GMT-2",
     },
   );
-
-  // cron.schedule(
-  //   "0 21 * * *",
-  //   () => {
-  //     console.log("Sending evening updates");
-  //     sendUpdatesToUsers(bot);
-  //   },
-  //   {
-  //     scheduled: true,
-  //     timezone: "Etc/GMT-2",
-  //   },
-  // );
-cron.schedule(
-  "0 18 * * *",
-  () => {
-    const now = new Date();
-    console.log(`Sending evening updates at ${now.toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}`);
-    sendUpdatesToUsers(bot);
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Berlin",
-  }
-);
+  cron.schedule(
+    "0 18 * * *",
+    () => {
+      const now = new Date();
+      console.log(
+        `Sending evening updates at ${now.toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}`,
+      );
+      sendUpdatesToUsers(bot);
+    },
+    {
+      scheduled: true,
+      timezone: "Europe/Berlin",
+    },
+  );
   console.log("Scheduler started");
 }
 

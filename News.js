@@ -171,46 +171,66 @@ class NewsService {
   }
 
   formatNewsUpdate(categories) {
-  let update = "📰 *Latest News Updates*\n\n";
+    let update = "📰 *Latest News Updates*\n\n";
 
-  const escapeMarkdown = (text) => {
-    const specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
-    return text.split('').map((char) => {
-      if (specialChars.includes(char)) {
-        return '\\' + char;
+    const escapeMarkdown = (text) => {
+      const specialChars = [
+        "_",
+        "*",
+        "[",
+        "]",
+        "(",
+        ")",
+        "~",
+        "`",
+        ">",
+        "#",
+        "+",
+        "-",
+        "=",
+        "|",
+        "{",
+        "}",
+        ".",
+        "!",
+      ];
+      return text
+        .split("")
+        .map((char) => {
+          if (specialChars.includes(char)) {
+            return "\\" + char;
+          }
+          return char;
+        })
+        .join("");
+    };
+
+    const formatCategory = (title, items) => {
+      if (items.length > 0) {
+        update += `*${escapeMarkdown(title)}:*\n`;
+        items.slice(0, 2).forEach((item) => {
+          update += `• *${escapeMarkdown(item.title.trim())}*\n`;
+          update += `  ${escapeMarkdown(item.summary.substring(0, 100).trim())}...\n`;
+          update += `  Source: ${escapeMarkdown(item.source)} | ${escapeMarkdown(item.date.toDateString())}\n`;
+          update += `  [Read more](${item.link})\n\n`;
+        });
       }
-      return char;
-    }).join('');
-  };
+    };
 
-  const formatCategory = (title, items) => {
-    if (items.length > 0) {
-      update += `*${escapeMarkdown(title)}:*\n`;
-      items.slice(0, 2).forEach(item => {
-        update += `• *${escapeMarkdown(item.title.trim())}*\n`;
-        update += `  ${escapeMarkdown(item.summary.substring(0, 100).trim())}...\n`;
-        update += `  Source: ${escapeMarkdown(item.source)} | ${escapeMarkdown(item.date.toDateString())}\n`;
-        update += `  [Read more](${item.link})\n\n`;
-      });
+    formatCategory("Palestine Focus", categories.palestine);
+    formatCategory("Global Conflicts", categories.conflicts);
+    formatCategory("World News", categories.world);
+    formatCategory("General News", categories.general);
+
+    update += "_For more detailed news updates, use /fullnews_";
+
+    // Ensure the message doesn't exceed Telegram's limit
+    if (update.length > 4000) {
+      update = update.substring(0, 3997) + "...";
     }
-  };
 
-  formatCategory("Palestine Focus", categories.palestine);
-  formatCategory("Global Conflicts", categories.conflicts);
-  formatCategory("World News", categories.world);
-  formatCategory("General News", categories.general);
-
-  update += "_For more detailed news updates, use /fullnews_";
-
-  // Ensure the message doesn't exceed Telegram's limit
-  if (update.length > 4000) {
-    update = update.substring(0, 3997) + "...";
+    return update;
   }
-
-  return update;
-}
-
-
 
   async getNewsUpdate() {
     try {
