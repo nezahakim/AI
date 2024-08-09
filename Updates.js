@@ -90,7 +90,7 @@ async function getQuoteOfTheDay() {
     for await (const c of getGeneratedText(1, enhancedInput)) {
       quote += c;
     }
-    return quote.trim();
+    return quote;
   } catch (error) {
     console.error("Error fetching quote:", error);
     return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
@@ -101,7 +101,7 @@ function Updates(bot) {
   // Schedule tasks for 06:00 and 19:00 GMT+2
 
   cron.schedule(
-    "0 6 * * *",
+    "30 8 * * *",
     () => {
       console.log("Sending morning updates");
       sendUpdatesToUsers(bot);
@@ -124,7 +124,7 @@ function Updates(bot) {
   //   },
   // );
 cron.schedule(
-  "59 21 * * *",
+  "0 18 * * *",
   () => {
     const now = new Date();
     console.log(`Sending evening updates at ${now.toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}`);
