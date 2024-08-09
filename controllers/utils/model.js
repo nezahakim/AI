@@ -69,13 +69,18 @@ export async function* getGeneratedText(userId, inputText, modelType) {
   ];
 
   try {
+
+function estimateTokens(messages) {
+  return messages.reduce((total, msg) => total + msg.content.split(/\s+/).length, 0);
+}
     const stream = hf.chatCompletionStream({
-      model: selectedModel,
-      messages: messages,
-      max_tokens: 256,
-      temperature: 0.9,
-      top_p: 0.9,
-    });
+  model: selectedModel,
+  messages: messages,
+  max_tokens: Math.min(256, 8192 - estimateTokens(messages)),
+  temperature: 0.9,
+  top_p: 0.9,
+});
+
 
     let fullResponse = "";
 
