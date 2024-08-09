@@ -49,10 +49,10 @@ async function sendUpdatesToUsers(bot) {
         message += `💡 *Quote of the Day:*\n${quote}\n\n`;
 
         // Call-to-action
-        message += `Have a great ${timeOfDay}! Remember, I'm here to help. Just ask if you need anything! 😊\n\n from @Notifycode .`;
+        message += `Have a great ${timeOfDay}! Remember, I'm here to help. Just ask if you need anything! 😊\n\n`;
 
         // Salutation
-        message += `Best regards,\nYour AI Assistant @NezaAI`;
+        message += `Best regards,\nYour AI Assistant @NezaAI\n\nfrom @Notifycode.`;
         const sanitizedMessage = escapeMarkdown(message);
         await bot.sendMessage(user.telegramId, sanitizedMessage, {
           parse_mode: "Markdown",
@@ -114,7 +114,7 @@ function Updates(bot) {
   // Schedule tasks for 06:00 and 19:00 GMT+2
 
   cron.schedule(
-    "15 9 * * *",
+    "0 6 * * *",
     () => {
       console.log("Sending morning updates");
       sendUpdatesToUsers(bot);
