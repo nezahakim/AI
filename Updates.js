@@ -8,26 +8,7 @@ import axios from "axios";
 import cron from "node-cron";
 
 const escapeMarkdown = (text) => {
-  const specialChars = [
-    "_",
-    "*",
-    "[",
-    "]",
-    "(",
-    ")",
-    "~",
-    "`",
-    ">",
-    "#",
-    "+",
-    "-",
-    "=",
-    "|",
-    "{",
-    "}",
-    ".",
-    "!",
-  ];
+  const specialChars = "_*`[";
   return text
     .split("")
     .map((char) => {
@@ -72,9 +53,9 @@ async function sendUpdatesToUsers(bot) {
 
         // Salutation
         message += `Best regards,\nYour AI Assistant @NezaAI`;
-        const senitizedMessage = escapeMarkdown(message);
-        await bot.sendMessage(user.telegramId, senitizedMessage, {
-          parse_mode: "MarkdownV2",
+        const sanitizedMessage = escapeMarkdown(message);
+        await bot.sendMessage(user.telegramId, sanitizedMessage, {
+          parse_mode: "Markdown",
           disable_web_page_preview: true,
         });
 
@@ -133,7 +114,7 @@ function Updates(bot) {
   // Schedule tasks for 06:00 and 19:00 GMT+2
 
   cron.schedule(
-    "55 8 * * *",
+    "4 9 * * *",
     () => {
       console.log("Sending morning updates");
       sendUpdatesToUsers(bot);
