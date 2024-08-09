@@ -101,7 +101,7 @@ function Updates(bot) {
   // Schedule tasks for 06:00 and 19:00 GMT+2
 
   cron.schedule(
-    "30 8 * * *",
+    "35 8 * * *",
     () => {
       console.log("Sending morning updates");
       sendUpdatesToUsers(bot);
