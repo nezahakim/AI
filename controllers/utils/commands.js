@@ -79,7 +79,7 @@ const commands = async (bot, msg) => {
         }
         break;
       case "news":
-        await bot.sendMessage(chatId, await NewsService.getNewsUpdate());
+        await bot.sendMessage(chatId, await NewsService.getNewsUpdate(), { parse_mode: "Markdown" },);
         break;
       case "support":
         await bot.sendMessage(
