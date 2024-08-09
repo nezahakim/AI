@@ -8,7 +8,7 @@ import axios from "axios";
 import cron from "node-cron";
 
 const escapeMarkdown = (text) => {
-  const specialChars = "_*`[";
+  const specialChars = "_`[";
   return text
     .split("")
     .map((char) => {
@@ -114,7 +114,7 @@ function Updates(bot) {
   // Schedule tasks for 06:00 and 19:00 GMT+2
 
   cron.schedule(
-    "4 9 * * *",
+    "15 9 * * *",
     () => {
       console.log("Sending morning updates");
       sendUpdatesToUsers(bot);
